@@ -19,3 +19,6 @@ xgboost>=2.0.0       # XGBoost ensemble for improved accuracy
 flask-limiter>=3.5.0           # Rate limiting middleware
 prometheus-flask-exporter>=0.23.0  # Prometheus metrics
 python-json-logger>=2.0.0      # Structured JSON logging
+
+# Phase 5: Next.js Migration & CORS
+flask-cors>=4.0.0              # Cross-Origin Resource Sharing for frontend

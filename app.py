@@ -18,10 +18,12 @@ CRITICAL RULES:
 """
 
 import logging
+import os
 import time
 from typing import Dict, Any, Tuple
 
 from flask import Flask, request, render_template, jsonify, g
+from flask_cors import CORS
 
 # Import decision pipeline (enforces calibration at startup)
 from decision_pipeline import DecisionPipeline, Verdict, analyze_url
@@ -36,6 +38,16 @@ try:
 except ImportError:
     OBSERVABILITY_AVAILABLE = False
 
+# Import safety governance (Phase 5)
+try:
+    from src.governance.safety_governance import get_governance_controller
+    GOVERNANCE_AVAILABLE = True
+except ImportError:
+    GOVERNANCE_AVAILABLE = False
+
+# Admin API Key for secure endpoints (use environment variable in production)
+ADMIN_API_KEY = os.getenv('PHISHGUARD_ADMIN_KEY', 'phishguard-dev-admin-key-2026')
+
 # Configure logging (use structured logging if available)
 if OBSERVABILITY_AVAILABLE:
     setup_logging(level=logging.INFO, json_format=False)  # Set json_format=True for production
@@ -48,6 +60,13 @@ logger = logging.getLogger(__name__)
 
 # Initialize Flask app
 app = Flask(__name__)
+
+# Enable CORS for Next.js frontend (Phase 5)
+CORS(app, resources={
+    r"/api/*": {"origins": ["http://localhost:3000", "http://127.0.0.1:3000"]},
+    r"/scan": {"origins": ["http://localhost:3000", "http://127.0.0.1:3000"]},
+    r"/health": {"origins": "*"}
+})
 
 # Import and register settings blueprint
 from settings_routes import settings_bp
@@ -130,6 +149,21 @@ def scan_url():
     }
     """
     try:
+        # Check governance freeze status BEFORE proceeding
+        if GOVERNANCE_AVAILABLE:
+            try:
+                gov_controller = get_governance_controller()
+                freeze_state = gov_controller.get_freeze_state()
+                if freeze_state.is_frozen:
+                    logger.warning(f"[SCAN] Blocked by governance freeze: {freeze_state.freeze_reason}")
+                    return jsonify({
+                        "error": "SYSTEM FROZEN",
+                        "reason": freeze_state.freeze_reason or "Unknown",
+                        "actions": "Contact administrator or use Emergency Unfreeze if authorized"
+                    }), 503
+            except Exception as e:
+                logger.warning(f"[SCAN] Governance check failed: {e}")
+        
         start_time = time.time()
         
         # Get URL from request
@@ -217,8 +251,150 @@ def health_check():
     return jsonify({
         "status": "healthy",
         "pipeline_ready": pipeline is not None,
-        "model_type": "CalibratedClassifierCV"
+        "model_type": "CalibratedClassifierCV",
+        "governance_available": GOVERNANCE_AVAILABLE
     })
+
+
+@app.route("/api/governance/status", methods=["GET"])
+def governance_status():
+    """
+    Get current governance status including freeze state and budget.
+    
+    Returns JSON: {
+        "is_frozen": bool,
+        "freeze_reason": string | null,
+        "frozen_at": string | null,
+        "frozen_by": string | null,
+        "incident_id": string | null,
+        "budget": { ... },
+        "health": { ... }
+    }
+    """
+    if not GOVERNANCE_AVAILABLE:
+        return jsonify({
+            "is_frozen": False,
+            "freeze_reason": None,
+            "frozen_at": None,
+            "frozen_by": None,
+            "incident_id": None,
+            "budget": {
+                "override_count_hourly": 0,
+                "max_overrides_per_hour": 5,
+                "budget_exhausted": False,
+                "window_start": None
+            },
+            "health": {
+                "pipeline_ready": pipeline is not None,
+                "model_type": "CalibratedClassifierCV",
+                "governance_available": False
+            }
+        })
+    
+    try:
+        gov_controller = get_governance_controller()
+        freeze_state = gov_controller.get_freeze_state()
+        budget_allowed, budget_reason = gov_controller.check_override_budget()
+        
+        return jsonify({
+            "is_frozen": freeze_state.is_frozen,
+            "freeze_reason": freeze_state.freeze_reason,
+            "frozen_at": freeze_state.frozen_at,
+            "frozen_by": freeze_state.frozen_by,
+            "incident_id": freeze_state.incident_id,
+            "budget": {
+                "override_count_hourly": 0,  # Would need to expose from budget state
+                "max_overrides_per_hour": 5,
+                "budget_exhausted": not budget_allowed,
+                "window_start": None
+            },
+            "health": {
+                "pipeline_ready": pipeline is not None,
+                "model_type": "CalibratedClassifierCV",
+                "governance_available": True
+            }
+        })
+    except Exception as e:
+        logger.error(f"[GOVERNANCE] Status check error: {e}")
+        return jsonify({
+            "error": "Failed to get governance status"
+        }), 500
+
+
+@app.route("/api/governance/unfreeze", methods=["POST"])
+def emergency_unfreeze():
+    """
+    Emergency unfreeze endpoint for Dashboard use.
+    Requires X-Admin-Key header for authentication.
+    
+    Expects JSON: { "force": true, "ticket": "optional-ticket-id" }
+    
+    Returns JSON: {
+        "success": true,
+        "message": "System unfrozen successfully"
+    }
+    """
+    # Verify admin API key
+    provided_key = request.headers.get('X-Admin-Key')
+    if not provided_key or provided_key != ADMIN_API_KEY:
+        logger.warning("[GOVERNANCE] Unauthorized unfreeze attempt")
+        return jsonify({
+            "success": False,
+            "error": "Unauthorized: Invalid or missing X-Admin-Key"
+        }), 401
+    
+    if not GOVERNANCE_AVAILABLE:
+        return jsonify({
+            "success": False,
+            "error": "Governance module not available"
+        }), 500
+    
+    try:
+        data = request.get_json()
+        if not data or not data.get('force'):
+            return jsonify({
+                "success": False,
+                "error": "Must provide {'force': true} to confirm unfreeze"
+            }), 400
+        
+        gov_controller = get_governance_controller()
+        freeze_state = gov_controller.get_freeze_state()
+        
+        if not freeze_state.is_frozen:
+            return jsonify({
+                "success": True,
+                "message": "System is not frozen"
+            })
+        
+        # Get optional ticket reference from request
+        ticket = data.get('ticket', 'NO_TICKET')
+        
+        # Resume from freeze with dashboard justification
+        gov_controller.resume_from_freeze(
+            resumed_by="Dashboard Emergency Unfreeze",
+            incident_id=f"DASHBOARD_UNFREEZE_{ticket}_{freeze_state.incident_id or 'UNKNOWN'}",
+            justification="Emergency unfreeze triggered from Scan Dashboard UI by authorized admin user"
+        )
+        
+        logger.warning(f"[GOVERNANCE] Emergency unfreeze triggered from Dashboard (ticket: {ticket})")
+        
+        return jsonify({
+            "success": True,
+            "message": "System unfrozen successfully"
+        })
+    
+    except ValueError as e:
+        return jsonify({
+            "success": False,
+            "error": str(e)
+        }), 400
+    
+    except Exception as e:
+        logger.error(f"[GOVERNANCE] Unfreeze error: {e}", exc_info=True)
+        return jsonify({
+            "success": False,
+            "error": "Failed to unfreeze system"
+        }), 500
 
 
 @app.route("/api/trusted-domains", methods=["GET"])
@@ -527,15 +703,30 @@ def get_threat_regions():
     return jsonify(regions)
 
 
-if __name__ == "__main__":
-
+def main():
+    """
+    Production-safe entry point.
+    
+    Environment Variables:
+        FLASK_DEBUG: Set to 'true' to enable debug mode (default: False)
+        PORT: Server port (default: 5000)
+        
+    SECURITY NOTE:
+        - Debug mode is DISABLED by default to prevent RCE via Werkzeug debugger
+        - For production, use a WSGI server (Gunicorn, uWSGI) instead of app.run()
+    """
+    # Read configuration from environment variables
+    debug_mode = os.getenv('FLASK_DEBUG', 'False').lower() == 'true'
+    port = int(os.getenv('PORT', 5000))
+    
     print("\n" + "="*60)
     print("[*] PHISHING URL DETECTION SCANNER (Production-Grade)")
     print("="*60)
     print("[+] Decision Pipeline: Initialized")
     print("[+] Model: Calibrated (CalibratedClassifierCV)")
     print("[+] Trusted Domains: Loaded")
-    print("[+] Server: http://127.0.0.1:5000")
+    print(f"[+] Server: http://127.0.0.1:{port}")
+    print(f"[+] Debug Mode: {'ENABLED (DEVELOPMENT ONLY)' if debug_mode else 'DISABLED (Production Safe)'}")
     print("="*60)
     print("")
     print("DECISION THRESHOLDS:")
@@ -543,6 +734,18 @@ if __name__ == "__main__":
     print("  SUSPICIOUS: 55% <= risk < 85%")
     print("  PHISHING:   risk >= 85%")
     print("")
+    
+    if debug_mode:
+        print("[!] WARNING: Debug mode is enabled. Do NOT use in production!")
+    else:
+        print("[+] TIP: For production, use 'gunicorn wsgi:app' instead of running directly")
+    
     print("="*60 + "\n")
     
-    app.run(debug=True, host="0.0.0.0", port=5000)
+    # Run the Flask development server
+    # NOTE: For production, use a proper WSGI server (Gunicorn, uWSGI)
+    app.run(debug=debug_mode, host="0.0.0.0", port=port)
+
+
+if __name__ == "__main__":
+    main()
