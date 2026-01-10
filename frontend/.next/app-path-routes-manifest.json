@@ -1,9 +1,0 @@
-{
-  "/_global-error/page": "/_global-error",
-  "/_not-found/page": "/_not-found",
-  "/dashboard/page": "/dashboard",
-  "/history/page": "/history",
-  "/page": "/",
-  "/settings/page": "/settings",
-  "/threat-map/page": "/threat-map"
-}

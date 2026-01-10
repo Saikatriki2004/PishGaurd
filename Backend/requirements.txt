@@ -1,0 +1,24 @@
+flask>=3.0.0
+numpy>=1.24.0
+pandas>=2.0.0
+scikit-learn>=1.3.0
+requests>=2.31.0
+beautifulsoup4>=4.12.0
+python-whois>=0.8.0
+dnspython>=2.4.0
+tldextract>=5.0.0
+tqdm>=4.66.0
+
+# New dependencies for Phase 1 improvements
+cachetools>=5.3.0    # In-memory TTL caching for P0 speed improvement
+
+# Phase 3: Model improvements
+xgboost>=2.0.0       # XGBoost ensemble for improved accuracy
+
+# Phase 4: Observability
+flask-limiter>=3.5.0           # Rate limiting middleware
+prometheus-flask-exporter>=0.23.0  # Prometheus metrics
+python-json-logger>=2.0.0      # Structured JSON logging
+
+# Phase 5: Next.js Migration & CORS
+flask-cors>=4.0.0              # Cross-Origin Resource Sharing for frontend

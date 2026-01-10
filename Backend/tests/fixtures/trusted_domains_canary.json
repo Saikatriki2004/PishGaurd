@@ -1,0 +1,48 @@
+{
+    "_comment": "CANARY DOMAINS - Probationary trusted domains under staged validation",
+    "_schema_version": "1.0",
+    "_created_date": "2025-12-27",
+    "canary_domains": [
+        {
+            "domain": "stripe.com",
+            "proposed_by": "security-team",
+            "proposed_date": "2025-12-27",
+            "reason": "Major payment processor, candidate for promotion",
+            "consecutive_passes": 0,
+            "minimum_passes_required": 5,
+            "notes": "Monitor for false positive reports before promotion"
+        },
+        {
+            "domain": "dropbox.com",
+            "proposed_by": "security-team",
+            "proposed_date": "2025-12-27",
+            "reason": "Major file storage service",
+            "consecutive_passes": 0,
+            "minimum_passes_required": 5,
+            "notes": "Evaluate after initial canary period"
+        },
+        {
+            "domain": "zoom.us",
+            "proposed_by": "security-team",
+            "proposed_date": "2025-12-27",
+            "reason": "Major video conferencing platform",
+            "consecutive_passes": 0,
+            "minimum_passes_required": 5,
+            "notes": "Added due to user false-positive reports"
+        }
+    ],
+    "test_expectations": {
+        "must_not_be_phishing": true,
+        "allowed_verdicts": [
+            "SAFE",
+            "SUSPICIOUS"
+        ],
+        "blocks_ci_on_failure": false,
+        "emits_warning_on_failure": true
+    },
+    "promotion_rules": {
+        "minimum_consecutive_passes": 5,
+        "requires_manual_approval": true,
+        "approval_documented_in_manifest": true
+    }
+}

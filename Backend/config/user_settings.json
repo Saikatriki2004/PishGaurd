@@ -1,0 +1,34 @@
+{
+  "profile": {
+    "fullName": "John Doe",
+    "email": "john.doe@phishguard.io",
+    "avatar": null,
+    "passwordHash": null,
+    "passwordLastChanged": null
+  },
+  "apiKey": "bkAR1tiac36zsZZEaah92bUev97tydbq",
+  "apiKeyCreatedAt": "2026-01-03T13:46:49.716868",
+  "notifications": {
+    "criticalThreats": true,
+    "suspiciousActivity": true,
+    "weeklyDigest": true
+  },
+  "allowedDomains": [
+    {
+      "domain": "google.com",
+      "dateAdded": "2023-10-26"
+    },
+    {
+      "domain": "company-intranet.net",
+      "dateAdded": "2023-09-12"
+    },
+    {
+      "domain": "secure-payments.io",
+      "dateAdded": "2023-08-05"
+    },
+    {
+      "domain": "test-verification.com",
+      "dateAdded": "Jan 03, 2026"
+    }
+  ]
+}

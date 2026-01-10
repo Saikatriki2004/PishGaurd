@@ -1,0 +1,24 @@
+{
+    "total_scans": 0,
+    "scans_by_verdict": {
+        "SAFE": 0,
+        "SUSPICIOUS": 0,
+        "PHISHING": 0
+    },
+    "scans_with_complete_analysis": 0,
+    "scans_with_incomplete_analysis": 0,
+    "scans_with_allowlist_override": 0,
+    "scans_without_allowlist_override": 0,
+    "scans_by_drift_status": {
+        "none": 0,
+        "warning": 0,
+        "significant": 0
+    },
+    "total_risk_signals": 0,
+    "total_positive_signals": 0,
+    "total_inconclusive_signals": 0,
+    "top_risk_signals": {},
+    "top_inconclusive_checks": {},
+    "collection_start": "2025-12-28T06:00:00Z",
+    "last_updated": ""
+}

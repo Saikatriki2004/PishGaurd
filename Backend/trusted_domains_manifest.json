@@ -1,0 +1,119 @@
+{
+  "version": "2025-12-27-v1",
+  "schema_version": "1.0",
+  "description": "Versioned manifest for trusted domain allowlist policy",
+  "last_modified_by": "security-team",
+  "last_modified_timestamp": "2025-12-27T06:30:00Z",
+  "change_reason": "Initial manifest creation with production-grade trusted domains",
+  "review_required": true,
+  "governance": {
+    "approval_required_for_additions": true,
+    "approval_required_for_removals": true,
+    "minimum_canary_runs_before_promotion": 5,
+    "audit_log_path": "audit/policy_override.log"
+  },
+  "domains": [
+    {
+      "domain": "google.com",
+      "category": "search_engine",
+      "added_date": "2025-12-27",
+      "added_by": "security-team",
+      "reason": "Major search engine, Tranco Top 10"
+    },
+    {
+      "domain": "github.com",
+      "category": "development",
+      "added_date": "2025-12-27",
+      "added_by": "security-team",
+      "reason": "Major code hosting platform, Tranco Top 100"
+    },
+    {
+      "domain": "microsoft.com",
+      "category": "technology",
+      "added_date": "2025-12-27",
+      "added_by": "security-team",
+      "reason": "Major tech company, Tranco Top 50"
+    },
+    {
+      "domain": "amazon.com",
+      "category": "ecommerce",
+      "added_date": "2025-12-27",
+      "added_by": "security-team",
+      "reason": "Major e-commerce platform, Tranco Top 20"
+    },
+    {
+      "domain": "facebook.com",
+      "category": "social_media",
+      "added_date": "2025-12-27",
+      "added_by": "security-team",
+      "reason": "Major social media platform, Tranco Top 10"
+    },
+    {
+      "domain": "apple.com",
+      "category": "technology",
+      "added_date": "2025-12-27",
+      "added_by": "security-team",
+      "reason": "Major tech company, Tranco Top 50"
+    },
+    {
+      "domain": "youtube.com",
+      "category": "media",
+      "added_date": "2025-12-27",
+      "added_by": "security-team",
+      "reason": "Major video platform (Google), Tranco Top 5"
+    },
+    {
+      "domain": "linkedin.com",
+      "category": "social_media",
+      "added_date": "2025-12-27",
+      "added_by": "security-team",
+      "reason": "Major professional network, Tranco Top 50"
+    },
+    {
+      "domain": "twitter.com",
+      "category": "social_media",
+      "added_date": "2025-12-27",
+      "added_by": "security-team",
+      "reason": "Major social media platform"
+    },
+    {
+      "domain": "paypal.com",
+      "category": "financial",
+      "added_date": "2025-12-27",
+      "added_by": "security-team",
+      "reason": "Major payment processor, critical for false-positive prevention"
+    },
+    {
+      "domain": "netflix.com",
+      "category": "media",
+      "added_date": "2025-12-27",
+      "added_by": "security-team",
+      "reason": "Major streaming service"
+    },
+    {
+      "domain": "wikipedia.org",
+      "category": "education",
+      "added_date": "2025-12-27",
+      "added_by": "security-team",
+      "reason": "Major educational resource, Tranco Top 20"
+    }
+  ],
+  "trusted_tlds": [
+    {
+      "tld": "gov",
+      "added_date": "2025-12-27",
+      "added_by": "security-team",
+      "reason": "Government TLD - inherently trusted"
+    },
+    {
+      "tld": "gov.uk",
+      "added_date": "2025-12-27",
+      "added_by": "security-team",
+      "reason": "UK Government TLD"
+    }
+  ],
+  "checksum": "sha256:pending_generation",
+  "user_added": [
+    "test-verification.com"
+  ]
+}

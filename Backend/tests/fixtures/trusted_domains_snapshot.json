@@ -1,0 +1,35 @@
+{
+    "_comment": "REGRESSION SNAPSHOT - DO NOT MODIFY WITHOUT VERSION BUMP IN MANIFEST",
+    "_schema_version": "1.0",
+    "_snapshot_date": "2025-12-27",
+    "_manifest_version": "2025-12-27-v1",
+    "regression_domains": [
+        "google.com",
+        "github.com",
+        "microsoft.com",
+        "amazon.com",
+        "facebook.com",
+        "apple.com",
+        "youtube.com",
+        "linkedin.com",
+        "twitter.com",
+        "paypal.com",
+        "netflix.com",
+        "wikipedia.org"
+    ],
+    "regression_tlds": [
+        "gov",
+        "gov.uk"
+    ],
+    "test_expectations": {
+        "all_domains_must_be_safe": true,
+        "max_risk_score": 30.0,
+        "ml_must_be_bypassed": true,
+        "risk_signals_must_be_empty": true
+    },
+    "ci_behavior": {
+        "fail_on_regression": true,
+        "fail_on_snapshot_mismatch": true,
+        "require_explicit_override_for_changes": true
+    }
+}

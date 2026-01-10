@@ -1,0 +1,121 @@
+{
+    "_comment": "User-facing Q&A for explanation UI. Display via tooltips, modals, or FAQ panels.",
+    "_version": "1.0",
+    "_last_updated": "2025-12-28",
+    "questions": [
+        {
+            "id": "is_definitely_safe",
+            "question": "Does this mean the website is definitely safe?",
+            "answer": "No. This result reflects automated signals observed at scan time. It does not guarantee the website is safe, and users should still exercise caution, especially when entering personal or financial information.",
+            "display_context": [
+                "safe_verdict",
+                "tooltip",
+                "faq"
+            ]
+        },
+        {
+            "id": "analysis_incomplete",
+            "question": "Why does this say 'analysis incomplete'?",
+            "answer": "Some checks could not be completed due to network limitations or timeouts. This does NOT imply the website is malicious, but it does reduce confidence in the result.",
+            "display_context": [
+                "incomplete_analysis",
+                "tooltip",
+                "faq"
+            ]
+        },
+        {
+            "id": "no_risk_signals",
+            "question": "Why are there no risk signals shown for this site?",
+            "answer": "This domain is on a trusted allowlist. To avoid false alarms, risk signals are hidden and the risk score is capped. This does not guarantee safety.",
+            "display_context": [
+                "allowlist_override",
+                "tooltip",
+                "faq"
+            ]
+        },
+        {
+            "id": "trusted_with_risk",
+            "question": "Why is a trusted site still showing some risk?",
+            "answer": "Even well-known domains can contain unusual patterns or temporary issues. The system limits risk scoring for trusted domains to avoid misleading results.",
+            "display_context": [
+                "trusted_domain",
+                "tooltip",
+                "faq"
+            ]
+        },
+        {
+            "id": "not_phishing",
+            "question": "Why wasn't this labeled as phishing?",
+            "answer": "This system does not make definitive claims. It reports risk indicators based on observed signals and uncertainty. Absence of a phishing label does not imply safety.",
+            "display_context": [
+                "suspicious_verdict",
+                "safe_verdict",
+                "tooltip",
+                "faq"
+            ]
+        },
+        {
+            "id": "can_be_tricked",
+            "question": "Can attackers trick this system?",
+            "answer": "Yes. No automated system can detect all phishing attempts. Attackers continuously adapt, which is why results should be interpreted as guidance, not guarantees.",
+            "display_context": [
+                "faq",
+                "about"
+            ]
+        },
+        {
+            "id": "data_storage",
+            "question": "Is my browsing data stored?",
+            "answer": "No. URLs are analyzed transiently for detection purposes. The system only records anonymous, aggregated metrics to improve reliability.",
+            "display_context": [
+                "privacy",
+                "faq",
+                "about"
+            ]
+        },
+        {
+            "id": "risk_score_capped",
+            "question": "Why does the risk score seem low or capped?",
+            "answer": "To prevent overconfidence, the system limits risk scores in certain scenarios such as trusted domains or incomplete analysis.",
+            "display_context": [
+                "risk_score",
+                "tooltip",
+                "faq"
+            ]
+        },
+        {
+            "id": "what_is_suspicious",
+            "question": "What does 'Suspicious' mean?",
+            "answer": "The system detected some concerning signals but not enough to classify the site as phishing. Exercise additional caution and verify the site through other means before entering sensitive information.",
+            "display_context": [
+                "suspicious_verdict",
+                "tooltip",
+                "faq"
+            ]
+        },
+        {
+            "id": "what_is_phishing",
+            "question": "What does 'Phishing' mean?",
+            "answer": "Multiple strong indicators suggest this may be a phishing attempt. We strongly recommend not entering any personal or financial information on this site.",
+            "display_context": [
+                "phishing_verdict",
+                "tooltip",
+                "faq"
+            ]
+        }
+    ],
+    "tooltips": {
+        "risk_score": "This score reflects the likelihood of phishing based on automated analysis. It is guidance, not a guarantee.",
+        "analysis_complete": "All automated checks completed successfully.",
+        "analysis_incomplete": "Some checks could not run. Confidence is reduced.",
+        "allowlist_override": "This domain is trusted. Risk signals are limited.",
+        "positive_signals": "Indicators that suggest legitimacy.",
+        "risk_signals": "Indicators that may suggest risk.",
+        "inconclusive_signals": "Checks that could not be completed."
+    },
+    "disclaimers": {
+        "general": "This tool provides automated analysis only. It cannot guarantee safety or detect all threats. Always exercise caution online.",
+        "safe_verdict": "A 'Safe' result does not guarantee the website is legitimate. Verify independently when entering sensitive information.",
+        "phishing_verdict": "A 'Phishing' result is based on automated signals and may occasionally be incorrect. Report false positives to help improve accuracy."
+    }
+}
