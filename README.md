@@ -74,12 +74,14 @@ Track and review all your previous scans with detailed logs.
    ```
    The API will be available at `http://127.0.0.1:5000`
 
-4. **Install and run React Frontend**
+4. **Install and run React Frontend** (in a new terminal)
    ```bash
    cd phishguard-frontend
    npm install
    npm run dev
    ```
+   
+   > **Important:** Keep the Flask API server running in a separate terminal while running the React dev server. See [Configuration](#-configuration) for `.env` setup with `VITE_API_URL`.
 
 5. **Open the application**
    ```
@@ -321,10 +323,6 @@ GET /metrics
 - **Recharts** - Data visualization
 - **Leaflet** - Interactive maps
 
-### Frontend (Flask Templates)
-- **HTML5/CSS3** - Responsive design
-- **JavaScript** - Interactive components
-- **Inter Font** - Clean typography
 
 ### AI Governance
 - **Safety Governance** - Emergency freeze capabilities
@@ -352,8 +350,11 @@ python -m pytest tests/ --cov=src --cov-report=html
 
 | Variable | Description | Default |
 |----------|-------------|---------|
-| `FLASK_ENV` | Environment mode | `production` |
+| `FLASK_ENV` | Environment mode (`development`/`production`) | `development` |
 | `FLASK_DEBUG` | Debug mode | `False` |
+| `FRONTEND_URL` | React frontend URL for CORS and API responses | `http://localhost:3000` |
+| `ALLOWED_ORIGINS` | Comma-separated allowed CORS origins (production) | Uses `FRONTEND_URL` |
+| `PHISHGUARD_ADMIN_KEY` | Admin API key for governance endpoints | Dev key |
 | `RATE_LIMIT` | API rate limit | `100/hour` |
 | `USE_MOCK_MODEL` | Use mock model for testing | `false` |
 

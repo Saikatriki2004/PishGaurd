@@ -35,8 +35,7 @@ def allowed_file(filename):
 # PAGE ROUTE
 # =========================================
 
-# Template route removed - React frontend serves the settings page
-# Settings UI: http://localhost:3000/settings
+# Template route removed - React frontend serves the settings page at /settings
 
 
 # =========================================

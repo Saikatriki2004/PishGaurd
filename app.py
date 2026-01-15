@@ -66,6 +66,26 @@ except ImportError:
 # Admin API Key for secure endpoints (use environment variable in production)
 ADMIN_API_KEY = os.getenv('PHISHGUARD_ADMIN_KEY', 'phishguard-dev-admin-key-2026')
 
+# Environment configuration
+FLASK_ENV = os.getenv('FLASK_ENV', 'development')
+IS_PRODUCTION = FLASK_ENV == 'production'
+
+# Frontend URL (configurable for different environments)
+# Set FRONTEND_URL env var in production (e.g., https://phishguard.example.com)
+FRONTEND_URL = os.getenv('FRONTEND_URL', 'http://localhost:3000')
+
+# CORS allowed origins (comma-separated in env, e.g., "https://app.example.com,https://admin.example.com")
+# In development, defaults to wildcard; in production, must be explicitly set
+_allowed_origins_env = os.getenv('ALLOWED_ORIGINS', '')
+if IS_PRODUCTION and _allowed_origins_env:
+    ALLOWED_ORIGINS = [origin.strip() for origin in _allowed_origins_env.split(',') if origin.strip()]
+elif IS_PRODUCTION:
+    # Production without explicit origins - use frontend URL only
+    ALLOWED_ORIGINS = [FRONTEND_URL] if FRONTEND_URL else []
+else:
+    # Development - allow all origins
+    ALLOWED_ORIGINS = "*"
+
 # Configure logging (use structured logging if available)
 if OBSERVABILITY_AVAILABLE:
     setup_logging(level=logging.INFO, json_format=False)  # Set json_format=True for production
@@ -79,13 +99,28 @@ logger = logging.getLogger(__name__)
 # Initialize Flask app
 app = Flask(__name__)
 
-# Enable CORS for Next.js frontend (Phase 5)
-CORS(app, resources={
-    r"/api/*": {"origins": "*"},
-    r"/scan": {"origins": "*"},
-    r"/health/*": {"origins": "*"},
-    r"/": {"origins": "*"}
-})
+# Enable CORS for React frontend
+# In development: allows all origins for easy testing
+# In production: restricts to ALLOWED_ORIGINS env var
+if ALLOWED_ORIGINS == "*":
+    # Development mode - permissive CORS
+    CORS(app, resources={
+        r"/api/*": {"origins": "*"},
+        r"/scan": {"origins": "*"},
+        r"/health*": {"origins": "*"},
+        r"/": {"origins": "*"}
+    })
+    logger.info("[APP] CORS: Development mode - all origins allowed")
+else:
+    # Production mode - restricted CORS
+    CORS(app, resources={
+        r"/api/governance/*": {"origins": ALLOWED_ORIGINS},  # Sensitive - restricted
+        r"/api/*": {"origins": ALLOWED_ORIGINS},
+        r"/scan": {"origins": ALLOWED_ORIGINS},
+        r"/health*": {"origins": "*"},  # Health checks open for monitoring
+        r"/": {"origins": "*"}  # API info open
+    })
+    logger.info(f"[APP] CORS: Production mode - origins: {ALLOWED_ORIGINS}")
 
 # Import and register settings blueprint
 from settings_routes import settings_bp
@@ -182,7 +217,7 @@ def api_info():
             "governance": "GET /api/governance/status - Governance status",
             "threats": "GET /api/threats/map-data - Threat map data"
         },
-        "frontend": "http://localhost:3000"
+        "frontend": FRONTEND_URL or request.host_url.rstrip('/')
     })
 
 
