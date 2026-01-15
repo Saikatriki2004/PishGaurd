@@ -1,7 +1,8 @@
 <p align="center">
   <img src="https://img.shields.io/badge/Python-3.9+-blue.svg" alt="Python">
   <img src="https://img.shields.io/badge/Flask-3.0+-green.svg" alt="Flask">
-  <img src="https://img.shields.io/badge/ML-Scikit--Learn-orange.svg" alt="Scikit-Learn">
+  <img src="https://img.shields.io/badge/React-18.2-61DAFB.svg" alt="React">
+  <img src="https://img.shields.io/badge/ML-XGBoost-orange.svg" alt="XGBoost">
   <img src="https://img.shields.io/badge/Accuracy-96.8%25-brightgreen.svg" alt="Accuracy">
   <img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="License">
 </p>
@@ -28,6 +29,8 @@
 - 🌐 **Threat Intelligence Map** - Visualize global phishing threats in real-time
 - 📈 **Batch Scanning** - Analyze up to 50 URLs simultaneously
 - 🔒 **Production-Ready** - Rate limiting, Prometheus metrics, structured logging
+- 🛡️ **AI Governance** - Safety controls, policy auditing, and emergency freeze capabilities
+- ⚛️ **Modern React Frontend** - Responsive SPA with TailwindCSS and Vite
 
 ---
 
@@ -49,29 +52,52 @@ Track and review all your previous scans with detailed logs.
 ### Prerequisites
 
 - Python 3.9 or higher
+- Node.js 18+ (for React frontend)
 - pip (Python package manager)
 
 ### Installation
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/Saikatriki2004/PhishGaurd.git
-   cd PhishGaurd
+   git clone https://github.com/Saikatriki2004/PishGaurd.git
+   cd PishGaurd
    ```
 
-2. **Install dependencies**
+2. **Install Backend dependencies**
    ```bash
    pip install -r requirements.txt
    ```
 
-3. **Run the application**
+3. **Run the Flask backend**
    ```bash
    python app.py
    ```
 
-4. **Open in browser**
+4. **Open in browser** (Flask templates)
    ```
    http://127.0.0.1:5000
+   ```
+
+### React Frontend (Optional)
+
+1. **Navigate to frontend directory**
+   ```bash
+   cd phishguard-frontend
+   ```
+
+2. **Install dependencies**
+   ```bash
+   npm install
+   ```
+
+3. **Start development server**
+   ```bash
+   npm run dev
+   ```
+
+4. **Open React app**
+   ```
+   http://localhost:3000
    ```
 
 ---
@@ -79,38 +105,80 @@ Track and review all your previous scans with detailed logs.
 ## 📦 Project Structure
 
 ```
-PhishGaurd/
-├── app.py                        # Main Flask application
-├── decision_pipeline.py          # Core ML decision pipeline
-├── feature_extractor.py          # URL feature extraction
-├── trusted_domains.py            # Trusted domain whitelist
-├── requirements.txt              # Python dependencies
-├── Procfile                      # Deployment configuration
+PhishGuard/
+├── app.py                          # Main Flask application & API routes
+├── decision_pipeline.py            # Core ML decision pipeline (compatibility)
+├── feature_extractor.py            # URL feature extraction (compatibility)
+├── trusted_domains.py              # Trusted domain whitelist (compatibility)
+├── settings_manager.py             # Application settings management
+├── settings_routes.py              # Settings API routes
+├── integrate_live_data.py          # Live data integration module
+├── wsgi.py                         # WSGI entry point for production
+├── requirements.txt                # Python dependencies
+├── Procfile                        # Heroku deployment configuration
 │
-├── models/
-│   ├── model.pkl                 # Trained ML model
-│   └── model_metadata.json       # Model performance metrics
+├── Backend/                        # Backend source modules
+│   ├── app.py                      # Alternative app entry point
+│   ├── src/
+│   │   ├── features/               # Feature extraction modules
+│   │   │   ├── feature.py          # Feature definitions
+│   │   │   └── feature_extractor.py # URL feature extraction
+│   │   ├── pipeline/               # ML pipeline components
+│   │   │   └── decision_pipeline.py # Decision making logic
+│   │   ├── training/               # Model training scripts
+│   │   │   ├── model_trainer.py    # Training orchestration
+│   │   │   └── merge_and_train.py  # Dataset merging & training
+│   │   ├── governance/             # AI Governance & Safety
+│   │   │   ├── governance_engine.py    # Core governance logic
+│   │   │   ├── safety_governance.py    # Safety controls
+│   │   │   ├── policy_audit.py         # Policy auditing
+│   │   │   ├── trusted_domains.py      # Trusted domain management
+│   │   │   └── blocklist.py            # Malicious domain blocklist
+│   │   ├── monitoring/             # Model monitoring
+│   │   │   └── calibration_monitor.py  # Calibration tracking
+│   │   └── observability/          # Metrics & logging
+│   │       └── explanation_telemetry.py # Explanation tracking
+│   ├── config/                     # Configuration files
+│   │   └── user_answers.json       # User Q&A configuration
+│   ├── models/                     # Trained ML models
+│   ├── tests/                      # Unit tests
+│   └── audit/                      # Policy audit logs
 │
-├── src/
-│   ├── features/                 # Feature extraction modules
-│   ├── pipeline/                 # ML pipeline components
-│   ├── training/                 # Model training scripts
-│   ├── monitoring/               # Model monitoring
-│   ├── governance/               # AI governance & safety
-│   └── observability/            # Metrics & logging
+├── phishguard-frontend/            # React Frontend (Vite + TailwindCSS)
+│   ├── src/
+│   │   ├── App.jsx                 # Main React application
+│   │   ├── main.jsx                # Entry point
+│   │   ├── pages/                  # Page components
+│   │   ├── components/             # Reusable components
+│   │   │   └── ErrorBoundary.jsx   # Error handling component
+│   │   ├── api/                    # API client
+│   │   ├── context/                # React context providers
+│   │   └── layouts/                # Layout components
+│   ├── package.json                # Node.js dependencies
+│   ├── vite.config.js              # Vite configuration
+│   └── tailwind.config.js          # TailwindCSS configuration
 │
-├── templates/
-│   ├── index.html                # Main scanner page
-│   ├── scan_dashboard.html       # Scan dashboard
-│   ├── scan_history.html         # Scan history viewer
-│   ├── threat_map.html           # Global threat map
-│   └── settings.html             # Application settings
+├── models/                         # Production ML models
+│   ├── model.pkl                   # Trained Gradient Boosting model (~4.5MB)
+│   ├── model_metadata.json         # Model performance metrics
+│   └── mock_model.pkl              # Mock model for testing
 │
-├── static/                       # CSS, JS, images
-├── datasets/                     # Training datasets
-├── tests/                        # Unit tests
-├── config/                       # Configuration files
-└── audit/                        # Policy audit logs
+├── templates/                      # Flask HTML templates
+│   ├── index.html                  # Main scanner page
+│   ├── scan_dashboard.html         # Scan dashboard
+│   ├── scan_history.html           # Scan history viewer
+│   ├── threat_map.html             # Global threat map
+│   └── settings.html               # Application settings
+│
+├── static/                         # Static assets (CSS, JS, images)
+├── datasets/                       # Training datasets
+├── tests/                          # Integration tests
+├── config/                         # Global configuration files
+├── metrics/                        # Metrics storage
+├── audit/                          # Audit logs
+├── scripts/                        # Utility scripts
+├── GOVERNANCE.md                   # AI Governance documentation
+└── Phishing URL Detection.ipynb    # Jupyter notebook for analysis
 ```
 
 ---
@@ -129,15 +197,17 @@ URL Input → Validation → Trusted Domain Check → Feature Extraction → ML 
 4. **Calibrated ML** - Predicts phishing probability with calibrated confidence
 5. **Tri-State Verdict** - Returns SAFE, SUSPICIOUS, or PHISHING
 
-### Feature Categories
+### Feature Categories (33 Total Features)
 
 | Category | Features | Description |
 |----------|----------|-------------|
-| **URL Structure** | IP address, length, shortener, @ symbol, redirects | Analyzes URL patterns |
-| **Domain Analysis** | Subdomains, hyphens, HTTPS, registration length | Domain characteristics |
-| **Content Analysis** | External resources, scripts, forms, iframes | Page content signals |
-| **Security Signals** | Certificate age, DNS records, WHOIS data | Security infrastructure |
-| **Behavioral** | Popups, right-click disabled, status bar manipulation | Suspicious behaviors |
+| **URL Structure** | `using_ip_address`, `url_length`, `is_shortener`, `has_at_symbol`, `has_double_slash_redirect` | Analyzes URL patterns |
+| **Domain Analysis** | `subdomain_count`, `has_dash_in_domain`, `has_https`, `domain_registration_length`, `domain_age` | Domain characteristics |
+| **Content Analysis** | `external_resources_ratio`, `external_scripts_ratio`, `suspicious_form_handler`, `iframe_present` | Page content signals |
+| **Security Signals** | `certificate_age`, `has_dns_record`, `abnormal_url_whois`, `https_in_domain_name` | Security infrastructure |
+| **Behavioral** | `popup_windows`, `right_click_disabled`, `status_bar_manipulation`, `redirect_count` | Suspicious behaviors |
+| **Advanced** | `url_entropy`, `homoglyph_detected`, `statistical_report_match` | Advanced detection |
+| **Failure Indicators** | `http_fetch_failed`, `whois_lookup_failed`, `dns_lookup_failed` | Extraction failure tracking |
 
 ### Decision Thresholds
 
@@ -151,14 +221,15 @@ URL Input → Validation → Trusted Domain Check → Feature Extraction → ML 
 
 ## 📊 Model Performance
 
-The model is trained on 11,000+ labeled URLs and achieves:
+The model is trained on 11,000+ labeled URLs with calibrated probability outputs:
 
-| Metric | Value |
-|--------|-------|
-| **Accuracy** | 96.8% |
-| **Phishing Precision** | 97.5% |
-| **Phishing Recall** | 95.3% |
-| **F1-Score** | 96.4% |
+| Metric | Phishing Class | Legitimate Class |
+|--------|----------------|------------------|
+| **Precision** | 97.49% | 96.33% |
+| **Recall** | 95.30% | 98.05% |
+| **F1-Score** | 96.38% | 97.18% |
+
+**Overall Accuracy: 96.83%**
 
 ### Confusion Matrix
 
@@ -166,6 +237,13 @@ The model is trained on 11,000+ labeled URLs and achieves:
 |--|---------------------|-------------------|
 | **Actual Legitimate** | 1,208 | 24 |
 | **Actual Phishing** | 46 | 933 |
+
+### Model Details
+
+- **Model Type**: CalibratedClassifierCV (Isotonic calibration)
+- **Base Estimator**: GradientBoostingClassifier
+- **Input Features**: 33 (30 base + 3 failure indicators)
+- **Training Date**: 2025-12-28
 
 ---
 
@@ -208,10 +286,31 @@ Content-Type: application/json
 }
 ```
 
-### Health Check
+### Governance Status
 
 ```http
-GET /health
+GET /api/governance/status
+```
+
+Returns freeze state, budget information, and system health.
+
+### Emergency Unfreeze
+
+```http
+POST /api/governance/unfreeze
+X-Admin-Key: <admin-key>
+
+{
+  "force": true,
+  "ticket": "INC-12345"
+}
+```
+
+### Health Checks
+
+```http
+GET /health/live    # Liveness probe
+GET /health/ready   # Readiness probe
 ```
 
 ### Prometheus Metrics
@@ -225,27 +324,43 @@ GET /metrics
 ## 🛠️ Tech Stack
 
 ### Backend
-- **Flask** - Web framework
-- **Scikit-learn** - Machine learning
-- **XGBoost** - Gradient boosting ensemble
+- **Flask 3.0+** - Web framework with CORS support
+- **Scikit-learn 1.3+** - Machine learning pipeline
+- **XGBoost 2.0+** - Gradient boosting ensemble
 - **NumPy/Pandas** - Data processing
+- **Flask-Limiter** - Rate limiting middleware
+- **Prometheus Flask Exporter** - Metrics collection
 
-### Frontend
-- **HTML5/CSS3** - Modern responsive UI
+### Frontend (React SPA)
+- **React 18.2** - Component-based UI
+- **Vite 5.0** - Fast build tool
+- **TailwindCSS 3.4** - Utility-first CSS
+- **React Query** - Server state management
+- **React Router 6** - Client-side routing
+- **Recharts** - Data visualization
+- **Leaflet** - Interactive maps
+
+### Frontend (Flask Templates)
+- **HTML5/CSS3** - Responsive design
 - **JavaScript** - Interactive components
 - **Inter Font** - Clean typography
 
-### Infrastructure
-- **Flask-Limiter** - Rate limiting
-- **Prometheus** - Metrics collection
-- **Python JSON Logger** - Structured logging
+### AI Governance
+- **Safety Governance** - Emergency freeze capabilities
+- **Policy Auditing** - Compliance tracking
+- **Trusted Domain Management** - Whitelist management
+- **Blocklist Engine** - Malicious domain blocking
 
 ---
 
 ## 🧪 Running Tests
 
 ```bash
+# Run all tests
 python -m pytest tests/ -v
+
+# Run with coverage
+python -m pytest tests/ --cov=src --cov-report=html
 ```
 
 ---
@@ -259,10 +374,55 @@ python -m pytest tests/ -v
 | `FLASK_ENV` | Environment mode | `production` |
 | `FLASK_DEBUG` | Debug mode | `False` |
 | `RATE_LIMIT` | API rate limit | `100/hour` |
+| `USE_MOCK_MODEL` | Use mock model for testing | `false` |
+
+### React Frontend Configuration
+
+Create `.env` file in `phishguard-frontend/`:
+```env
+VITE_API_URL=http://localhost:5000
+```
 
 ### Trusted Domains
 
 Edit `trusted_domains_manifest.json` to add/remove trusted domains that bypass ML detection.
+
+---
+
+## 🛡️ AI Governance
+
+PhishGuard includes enterprise-grade AI governance features:
+
+- **Emergency Freeze** - Instantly halt all predictions in case of issues
+- **Policy Auditing** - Track all governance decisions
+- **Budget Controls** - Rate limiting and resource management
+- **Transparency** - Full explanation of model decisions
+
+See [GOVERNANCE.md](GOVERNANCE.md) for detailed documentation.
+
+---
+
+## 🚀 Deployment
+
+### Heroku
+
+```bash
+heroku create your-app-name
+git push heroku main
+```
+
+### Docker
+
+```bash
+docker build -t phishguard .
+docker run -p 5000:5000 phishguard
+```
+
+### Production WSGI
+
+```bash
+gunicorn wsgi:app -w 4 -b 0.0.0.0:5000
+```
 
 ---
 
@@ -288,7 +448,8 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 - Dataset sources for phishing URL research
 - Scikit-learn and XGBoost communities
-- Flask framework contributors
+- Flask and React framework contributors
+- Open-source security research community
 
 ---
 
@@ -296,7 +457,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 **Saikat** - [@Saikatriki2004](https://github.com/Saikatriki2004)
 
-Project Link: [https://github.com/Saikatriki2004/PhishGaurd](https://github.com/Saikatriki2004/PhishGaurd)
+Project Link: [https://github.com/Saikatriki2004/PishGaurd](https://github.com/Saikatriki2004/PishGaurd)
 
 ---
 
