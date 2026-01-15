@@ -22,7 +22,7 @@ import os
 import time
 from typing import Dict, Any, Tuple
 
-from flask import Flask, request, render_template, jsonify, g
+from flask import Flask, request, jsonify, g
 from flask_cors import CORS
 
 # ============================================================================
@@ -81,9 +81,10 @@ app = Flask(__name__)
 
 # Enable CORS for Next.js frontend (Phase 5)
 CORS(app, resources={
-    r"/api/*": {"origins": ["http://localhost:3000", "http://127.0.0.1:3000"]},
-    r"/scan": {"origins": ["http://localhost:3000", "http://127.0.0.1:3000"]},
-    r"/health": {"origins": "*"}
+    r"/api/*": {"origins": "*"},
+    r"/scan": {"origins": "*"},
+    r"/health/*": {"origins": "*"},
+    r"/": {"origins": "*"}
 })
 
 # Import and register settings blueprint
@@ -168,9 +169,21 @@ def validate_url_input(url: str) -> Tuple[bool, str]:
 
 
 @app.route("/", methods=["GET"])
-def index():
-    """Render the main scanner page."""
-    return render_template("index.html")
+def api_info():
+    """Return API information."""
+    return jsonify({
+        "name": "PhishGuard API",
+        "version": "1.0.0",
+        "description": "AI-Powered Phishing URL Detection API",
+        "endpoints": {
+            "scan": "POST /scan - Analyze a single URL",
+            "batch_scan": "POST /api/batch-scan - Analyze multiple URLs",
+            "health": "GET /health - Health check",
+            "governance": "GET /api/governance/status - Governance status",
+            "threats": "GET /api/threats/map-data - Threat map data"
+        },
+        "frontend": "http://localhost:3000"
+    })
 
 
 @app.route("/scan", methods=["POST"])
@@ -655,22 +668,10 @@ def batch_scan():
 # THREAT MAP ROUTES (GAP 1: STRICT API CONTRACTS)
 # ============================================================
 
-@app.route("/dashboard", methods=["GET"])
-def dashboard():
-    """Render the scan dashboard page."""
-    return render_template("scan_dashboard.html")
-
-
-@app.route("/scan-history", methods=["GET"])
-def scan_history():
-    """Render the scan history page."""
-    return render_template("scan_history.html")
-
-
-@app.route("/threat-map", methods=["GET"])
-def threat_map():
-    """Render the threat map page."""
-    return render_template("threat_map.html")
+# Template routes removed - React frontend is now the primary UI
+# Dashboard: http://localhost:3000/dashboard
+# Scan History: http://localhost:3000/scan-history  
+# Threat Map: http://localhost:3000/threat-map
 
 
 @app.route("/api/threats/map-data", methods=["GET"])

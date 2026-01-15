@@ -68,37 +68,25 @@ Track and review all your previous scans with detailed logs.
    pip install -r requirements.txt
    ```
 
-3. **Run the Flask backend**
+3. **Run the Flask API server**
    ```bash
    python app.py
    ```
+   The API will be available at `http://127.0.0.1:5000`
 
-4. **Open in browser** (Flask templates)
-   ```
-   http://127.0.0.1:5000
-   ```
-
-### React Frontend (Optional)
-
-1. **Navigate to frontend directory**
+4. **Install and run React Frontend**
    ```bash
    cd phishguard-frontend
-   ```
-
-2. **Install dependencies**
-   ```bash
    npm install
-   ```
-
-3. **Start development server**
-   ```bash
    npm run dev
    ```
 
-4. **Open React app**
+5. **Open the application**
    ```
    http://localhost:3000
    ```
+
+> **Note:** The Flask backend is now API-only. The React frontend at `phishguard-frontend/` is the primary UI.
 
 ---
 
@@ -162,13 +150,6 @@ PhishGuard/
 │   ├── model.pkl                   # Trained Gradient Boosting model (~4.5MB)
 │   ├── model_metadata.json         # Model performance metrics
 │   └── mock_model.pkl              # Mock model for testing
-│
-├── templates/                      # Flask HTML templates
-│   ├── index.html                  # Main scanner page
-│   ├── scan_dashboard.html         # Scan dashboard
-│   ├── scan_history.html           # Scan history viewer
-│   ├── threat_map.html             # Global threat map
-│   └── settings.html               # Application settings
 │
 ├── static/                         # Static assets (CSS, JS, images)
 ├── datasets/                       # Training datasets

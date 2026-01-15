@@ -12,7 +12,7 @@ Provides RESTful API for:
 
 import os
 import uuid
-from flask import Blueprint, request, jsonify, render_template, current_app
+from flask import Blueprint, request, jsonify, current_app
 from werkzeug.utils import secure_filename
 
 from settings_manager import get_settings_manager
@@ -35,10 +35,8 @@ def allowed_file(filename):
 # PAGE ROUTE
 # =========================================
 
-@settings_bp.route('/settings', methods=['GET'])
-def settings_page():
-    """Render the settings page."""
-    return render_template('settings.html')
+# Template route removed - React frontend serves the settings page
+# Settings UI: http://localhost:3000/settings
 
 
 # =========================================
